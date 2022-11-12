@@ -38,8 +38,8 @@ class Weaviate extends TableProvider with DataSourceRegister {
   }
 
   def convertWeaviateDatatypeToSparkDataType(weaviateDataType: util.List[String]): DataType = {
-    weaviateDataType[0] match {
-      case "text" | "string" | "geoCoordinates" | "phoneNumber" => DataTypes.StringType
+    weaviateDataType.get(0) match {
+      case "text" | "string" | "geoCoordinates" | "phoneNumber" | "blob" => DataTypes.StringType
       case "text[]" | "string[]" => ArrayType(DataTypes.StringType)
       case "int" => DataTypes.IntegerType
       case "int[]" => ArrayType(DataTypes.IntegerType)
