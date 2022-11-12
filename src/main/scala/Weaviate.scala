@@ -3,7 +3,7 @@ package io.weaviate.spark
 import org.apache.spark.sql.connector.catalog.{Table, TableProvider}
 import org.apache.spark.sql.connector.expressions.Transform
 import org.apache.spark.sql.sources.DataSourceRegister
-import org.apache.spark.sql.types.{DataType, DataTypes, Metadata, StringType, StructField, StructType}
+import org.apache.spark.sql.types.{ArrayType, DataType, DataTypes, Metadata, StringType, StructField, StructType}
 import org.apache.spark.sql.util.CaseInsensitiveStringMap
 import technology.semi.weaviate.client.Config
 import technology.semi.weaviate.client.WeaviateClient
@@ -38,7 +38,19 @@ class Weaviate extends TableProvider with DataSourceRegister {
   }
 
   def convertWeaviateDatatypeToSparkDataType(weaviateDataType: util.List[String]): DataType = {
-
+    weaviateDataType[0] match {
+      case "text" | "string" | "geoCoordinates" | "phoneNumber" => DataTypes.StringType
+      case "text[]" | "string[]" => ArrayType(DataTypes.StringType)
+      case "int" => DataTypes.IntegerType
+      case "int[]" => ArrayType(DataTypes.IntegerType)
+      case "number" => DataTypes.FloatType
+      case "number[]" => ArrayType(DataTypes.FloatType)
+      case "boolean" => DataTypes.BooleanType
+      case "boolean[]" => ArrayType(DataTypes.BooleanType)
+      // Weaviate dates need to be timestamped so use TimestampType Spark DataType
+      case "date" => DataTypes.TimestampType
+      case "date[]" => ArrayType(DataTypes.TimestampType)
+    }
   }
 
   override def getTable(schema: StructType, partitioning: Array[Transform], properties: util.Map[String, String]): Table =
