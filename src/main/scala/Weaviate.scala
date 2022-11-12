@@ -3,7 +3,7 @@ package io.weaviate.spark
 import org.apache.spark.sql.connector.catalog.{Table, TableProvider}
 import org.apache.spark.sql.connector.expressions.Transform
 import org.apache.spark.sql.sources.DataSourceRegister
-import org.apache.spark.sql.types.{ArrayType, DataType, DataTypes, Metadata, StringType, StructField, StructType}
+import org.apache.spark.sql.types.{ArrayType, DataType, DataTypes, Metadata, StructField, StructType}
 import org.apache.spark.sql.util.CaseInsensitiveStringMap
 import technology.semi.weaviate.client.Config
 import technology.semi.weaviate.client.WeaviateClient
