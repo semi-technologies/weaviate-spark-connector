@@ -18,14 +18,17 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
-      - name: Set Spark Connector version to tag version
-        run: sed -i 's|ThisBuild / version := ".*$|ThisBuild / version := "${{ env.version }}"|' build.sbt
       - name: Run integration test to ensure release works
         run: sbt -v +test
       - name: Create jar with all dependencies included
         run: |
           sbt assembly
           test -f ./target/scala-2.12/weaviate-spark-connector-assembly-${{ env.version }}.jar
+#      - name: Publish artifact to sonatype and release to maven repo
+#        env:
+#          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+#        run: |
+#          tools/publish_release.sh
       - name: Create Release only if tag v* was pushed
         if: startsWith(github.ref, 'refs/tags/v')
         uses: ncipollo/release-action@v1
